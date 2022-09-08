@@ -1,0 +1,21 @@
+---
+title: "demo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This is the onmaRg library
+
+It is primarily used to quickly and easily load Ontario Marginalization data:
+
+```{r}
+library(onmaRg)
+
+OnMarg_16_DA_df <- om_data(2016, "DAUID")
+
+OnMarg_16_DA_sf <- om_geo(2016, "DAUID")
+
+```

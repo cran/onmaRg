@@ -1,0 +1,12 @@
+c79c09ef84fe6161464623632eca6e54 *DESCRIPTION
+c6314cc7fb520da9970bf4f2563bd753 *NAMESPACE
+042cf10bfee3b7f73f98edce587f23ad *R/om_data.R
+de5769e4d340daa689193c3507ded6b0 *R/om_geo.R
+b668ed730d3be5b29544b1aeba0e7da2 *README.md
+9ed25d5064f1d4d417423caa9f95df6e *build/vignette.rds
+022435d524f3285287f8f025816cb886 *inst/doc/demo.R
+b854d3f807aed52726efd50473fc878c *inst/doc/demo.Rmd
+461ae0e0cebe2e668409a96768f6fa22 *inst/doc/demo.html
+db6871a601fa08f99ab327483c9ac3ef *man/om_data.Rd
+db18fc65fc1339bcc145b91b0bdc5214 *man/om_geo.Rd
+b854d3f807aed52726efd50473fc878c *vignettes/demo.Rmd
