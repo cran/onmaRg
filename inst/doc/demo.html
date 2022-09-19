@@ -12,7 +12,7 @@
 
 
 
-<title>demo</title>
+<title>Introduction to onmaRg</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -330,39 +330,25 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">demo</h1>
+<h1 class="title toc-ignore">Introduction to onmaRg</h1>
 
 
 
-<p>This is the onmaRg library</p>
-<p>It is primarily used to quickly and easily load Ontario
-Marginalization data:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(onmaRg)</span></code></pre></div>
-<pre><code>## Loading required package: dplyr</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre><code>## Loading required package: httr</code></pre>
-<pre><code>## Loading required package: readxl</code></pre>
-<pre><code>## Loading required package: sf</code></pre>
-<pre><code>## Linking to GEOS 3.9.1, GDAL 3.4.3, PROJ 7.2.1; sf_use_s2() is TRUE</code></pre>
-<pre><code>## Loading required package: stringr</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>OnMarg_16_DA_df <span class="ot">&lt;-</span> <span class="fu">om_data</span>(<span class="dv">2016</span>, <span class="st">&quot;DAUID&quot;</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>OnMarg_16_DA_sf <span class="ot">&lt;-</span> <span class="fu">om_geo</span>(<span class="dv">2016</span>, <span class="st">&quot;DAUID&quot;</span>)</span></code></pre></div>
-<pre><code>## Reading layer `lda_000b16a_e&#39; from data source 
-##   `C:\Users\willi\AppData\Local\Temp\RtmpOqdY3B\lda_000b16a_e.shx&#39; 
-##   using driver `ESRI Shapefile&#39;
-## Simple feature collection with 56589 features and 22 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: 3689439 ymin: 659338.9 xmax: 9015737 ymax: 5242179
-## Projected CRS: PCS_Lambert_Conformal_Conic</code></pre>
+<p>Currently, the primary functions for this package create data frames
+and spatial object</p>
+<p>This example shows how to load marginalization data and create a plot
+showing Deprivation by region.</p>
+<div id="for-sf-objects" class="section level3">
+<h3>For sf objects:</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(onmaRg)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>DA_2016 <span class="ot">&lt;-</span> <span class="fu">om_geo</span>(<span class="dv">2016</span>, <span class="st">&quot;DAUID&quot;</span>, <span class="st">&quot;sf&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(CSDNAME <span class="sc">==</span> <span class="st">&quot;Toronto&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data=</span>DA_2016, <span class="fu">aes</span>(<span class="at">fill=</span>DEPRIVATION_Q_DA16))</span></code></pre></div>
+</div>
 
 
 

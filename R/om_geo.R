@@ -8,7 +8,8 @@ globalVariables(c("geometry"))
 #' If the geometry file is unable to be downloaded, an error message will be produced.
 #' @param year Integer year of data to load
 #' @param level The level of precision to load, this can be "DAUID", "CTUID", "CSDUID", "CCSUID", "CDUID", "CMAUID", "PHUUID", "LHINUID", or "LHIN_SRUID"
-#' @return A sf object containing the Marginalization Index and geographic boundaries for every geographic identifier
+#' @param format The format for the geographic object, this can be "sf" or "sp"
+#' @return A sf or sp object containing the Marginalization Index and geographic boundaries for every geographic identifier
 #' @import dplyr
 #' @import httr
 #' @import readxl
@@ -21,7 +22,7 @@ globalVariables(c("geometry"))
 #' DA_2016_geo <- om_geo(2016, "DAUID")
 #' }
 
-om_geo <- function(year, level) {
+om_geo <- function(year, level, format) {
   # Initial setup
   year <- toString(year)
   CRS_to_use <- st_crs("+init=EPSG:2962") # NAD83 UTM Zone 17N
@@ -137,6 +138,16 @@ om_geo <- function(year, level) {
       rowMeans()
   })
 
-
-  return(shape_marg)
+  # Returns the correct format
+  switch(format,
+         "sf"={
+           return(shape_marg)
+         },
+         "sp"={
+           return(as_Spatial(shape_marg))
+         },
+         {
+           stop("Unrecognized file format used, please specify 'sf' or 'sp'")
+         }
+  )
 }

@@ -1,5 +1,5 @@
 ---
-title: "demo"
+title: "Introduction to onmaRg"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{demo}
@@ -7,15 +7,22 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This is the onmaRg library
+Currently, the primary functions for this package create data frames and spatial object
 
-It is primarily used to quickly and easily load Ontario Marginalization data:
+This example shows how to load marginalization data and create a plot showing Deprivation by region.
 
-```{r}
+### For sf objects:
+
+```{r, eval=FALSE}
 library(onmaRg)
+library(ggplot2)
 
-OnMarg_16_DA_df <- om_data(2016, "DAUID")
+DA_2016 <- om_geo(2016, "DAUID", "sf") %>%
+  filter(CSDNAME == "Toronto")
 
-OnMarg_16_DA_sf <- om_geo(2016, "DAUID")
+plot <- ggplot() +
+  geom_sf(data=DA_2016, aes(fill=DEPRIVATION_Q_DA16))
 
 ```
+
+
