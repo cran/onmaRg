@@ -25,6 +25,6 @@ If the geometry file is unable to be downloaded, an error message will be produc
 }
 \examples{
 \donttest{
-DA_2016_geo <- om_geo(2016, "DAUID")
+DA_2016_geo <- om_geo(2016, "DAUID", "sf")
 }
 }

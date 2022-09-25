@@ -7,5 +7,4 @@
 #  
 #  plot <- ggplot() +
 #    geom_sf(data=DA_2016, aes(fill=DEPRIVATION_Q_DA16))
-#  
 

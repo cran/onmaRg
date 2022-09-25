@@ -19,7 +19,7 @@ globalVariables(c("geometry"))
 #' @export
 #' @examples
 #' \donttest{
-#' DA_2016_geo <- om_geo(2016, "DAUID")
+#' DA_2016_geo <- om_geo(2016, "DAUID", "sf")
 #' }
 
 om_geo <- function(year, level, format) {
