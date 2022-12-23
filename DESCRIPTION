@@ -1,7 +1,7 @@
 Package: onmaRg
 Type: Package
 Title: Import Public Health Ontario's Ontario Marginalization Index
-Version: 0.1.2
+Version: 0.2.0
 Authors@R: 
     person("William", "Conley", , "william@cconley.ca", role = c("aut", "cre"))
 Description: The Ontario Marginalization Index is a socioeconomic model that is built on Statistics Canada census data.
@@ -17,8 +17,8 @@ Depends: dplyr, httr, readxl, sf, stringr, utils
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-09-24 20:40:54 UTC; willi
+Packaged: 2022-12-23 00:47:36 UTC; willi
 Author: William Conley [aut, cre]
 Maintainer: William Conley <william@cconley.ca>
 Repository: CRAN
-Date/Publication: 2022-09-25 16:40:08 UTC
+Date/Publication: 2022-12-23 07:30:02 UTC

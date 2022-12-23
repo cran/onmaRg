@@ -1,7 +1,8 @@
-7781fc9b7880fcdfe0d34d65d5e272c3 *DESCRIPTION
-c6314cc7fb520da9970bf4f2563bd753 *NAMESPACE
+1b50bc7fc1453a156d2a30c521ec52ff *DESCRIPTION
+321c21a5da67a109571f6f93024cf64a *NAMESPACE
 042cf10bfee3b7f73f98edce587f23ad *R/om_data.R
 20baf1f34bc44753fadb0c1876c56f0c *R/om_geo.R
+0b418facbc336b10f660493fd221b7b9 *R/om_quint.R
 b668ed730d3be5b29544b1aeba0e7da2 *README.md
 9ed25d5064f1d4d417423caa9f95df6e *build/vignette.rds
 d677ad20955151972f4e0d8faefd0e53 *inst/doc/demo.R
@@ -9,5 +10,6 @@ d677ad20955151972f4e0d8faefd0e53 *inst/doc/demo.R
 1176d8999f96a89e750babbd0530d8fd *inst/doc/demo.html
 db6871a601fa08f99ab327483c9ac3ef *man/om_data.Rd
 9f93761f76f625dc5b0cf1c12fc1e0f1 *man/om_geo.Rd
+009a12f3d8abd88dcd108f1f28ecdd89 *man/om_quint.Rd
 6aa9d06a49c0cb0057f06209fab7a56d *vignettes/REFERENCES.bib
 09bf634102f7a54cddd82e4cc9afcf0b *vignettes/demo.Rmd
