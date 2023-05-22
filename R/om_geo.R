@@ -18,7 +18,7 @@ globalVariables(c("geometry"))
 #' @import utils
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' DA_2016_geo <- om_geo(2016, "DAUID", "sf")
 #' }
 
@@ -52,6 +52,10 @@ om_geo <- function(year, level, format) {
          "2016"={
            stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip"
          },
+         "2021"={
+           stat_url <- "https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip"
+           stop("The onmaRg data for this year is not yet available")
+         },
          {
            # Breaks if an invalid ON-Marg year is entered
            stop("There is no record for year " + year)
@@ -73,6 +77,9 @@ om_geo <- function(year, level, format) {
     page <- paste0(year, "_", prefix)
   }
 
+  # ============================================================================
+  # Helper functions
+  # ============================================================================
 
   # Gets the name of a file from its URL
   getFileName <- function(url, extension) {
@@ -109,6 +116,67 @@ om_geo <- function(year, level, format) {
     return(st_read(filepath))
   }
 
+  # ============================================================================
+  # Processing functions
+  # ============================================================================
+
+  process_2011_2016 <- function(year) {
+    # Get url to Stats Canada
+    if (year == "2011") {
+      stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000a11a_e.zip"
+    }
+    else {
+      stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip"
+    }
+
+    # Gets the page name for the given level and year as "page"
+    if (level == "DAUID") {
+      prefix <- "DA"
+    }
+    else {
+      prefix <- level
+    }
+
+    if (year == "2011" || level == "DAUID") {
+      page <- paste0(prefix, "_", year)
+    }
+    else {
+      page <- paste0(year, "_", prefix)
+    }
+    # Loads a dataframe containing marginalization data
+    df1 <- om_data(year, level)
+
+
+    # Loads a dataframe containing shape data
+    df2 <- extractFromZip(stat_url) %>%
+      st_transform(CRS_to_use) #%>%
+
+
+    # Summarizes the dataframe if not selecting DAUID
+    if (!level == "DAUID") {
+      df2 <- df2 %>%
+        group_by_at(level) %>%
+        summarize(geometry=st_union(geometry))
+    }
+
+
+    # Merges geographic location with ON-Marg values and returns the data frame
+    shape_marg <- merge(df2, df1, by=level)
+
+
+    # Makes a marginalization index column
+    shape_marg <- mutate(shape_marg, index={
+      shape_marg[,grepl("_Q_", names(shape_marg))] %>%
+        st_drop_geometry() %>%
+        rowMeans()
+    })
+
+    return(shape_marg)
+  }
+
+  # ============================================================================
+  # Return function
+  # ============================================================================
 
   # Loads a dataframe containing marginalization data
   df1 <- om_data(year, level)

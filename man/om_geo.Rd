@@ -24,7 +24,7 @@ If a year or level is used that does not exist or is not implemented, an error m
 If the geometry file is unable to be downloaded, an error message will be produced.
 }
 \examples{
-\donttest{
+\dontrun{
 DA_2016_geo <- om_geo(2016, "DAUID", "sf")
 }
 }
