@@ -1,7 +1,7 @@
-14adfd718f015eaa271d38776858efcc *DESCRIPTION
+12885c2306b8f207126b5212d934608e *DESCRIPTION
 321c21a5da67a109571f6f93024cf64a *NAMESPACE
-042cf10bfee3b7f73f98edce587f23ad *R/om_data.R
-b4efd1a4282cb1b93ae1eeec83c25900 *R/om_geo.R
+e5ef200ae85b4be66e23d2d7f7f77fde *R/om_data.R
+9de7e7f0fbc19a0904a47bdfaef3b3a2 *R/om_geo.R
 0b418facbc336b10f660493fd221b7b9 *R/om_quint.R
 b668ed730d3be5b29544b1aeba0e7da2 *README.md
 9ed25d5064f1d4d417423caa9f95df6e *build/vignette.rds

@@ -44,7 +44,8 @@ om_data <- function(year, level) {
            format <- ".xlsx"
          },
          "2016"={
-           url <- "https://www.publichealthontario.ca/-/media/Data-Files/index-on-marg.xls?sc_lang=en"
+           #url <- "https://www.publichealthontario.ca/-/media/Data-Files/index-on-marg.xls?sc_lang=en"
+           url <- "https://www.publichealthontario.ca/-/media/Data-Files/index-on-marg-2016.xls?sc_lang=en&rev=be5ab11ce0cc4fe5ab99ee66d359fd00&hash=8AE291D54B3AD013A106D27139218CE8"
            format <- ".xls"
          },
          {

@@ -23,6 +23,7 @@ globalVariables(c("geometry"))
 #' }
 
 om_geo <- function(year, level, format) {
+
   # Initial setup
   year <- toString(year)
   CRS_to_use <- st_crs("+init=EPSG:2962") # NAD83 UTM Zone 17N
@@ -32,49 +33,6 @@ om_geo <- function(year, level, format) {
   # Print warning if requested level does not exist
   if (!level %in% geoLevels) {
     stop(paste0("Level ", level, " is not recognized"))
-  }
-
-
-  # Gets the correct information for a given year
-  switch(year,
-         # stats_url <- URL for the shapefile
-         "2001"={
-           #stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000b01a_e.zip"
-           stop("This year has not yet been implemented")
-         },
-         "2006"={
-           #stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000a06a_e.zip"
-           stop("This year has not yet been implemented")
-         },
-         "2011"={
-           stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000a11a_e.zip"
-         },
-         "2016"={
-           stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip"
-         },
-         "2021"={
-           stat_url <- "https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip"
-           stop("The onmaRg data for this year is not yet available")
-         },
-         {
-           # Breaks if an invalid ON-Marg year is entered
-           stop("There is no record for year " + year)
-         }
-  )
-
-  # Gets the page name for the given level and year as "page"
-  if (level == "DAUID") {
-    prefix <- "DA"
-  }
-  else {
-    prefix <- level
-  }
-
-  if (year == "2011" || level == "DAUID") {
-    page <- paste0(prefix, "_", year)
-  }
-  else {
-    page <- paste0(year, "_", prefix)
   }
 
   # ============================================================================
@@ -99,7 +57,7 @@ om_geo <- function(year, level, format) {
     tryCatch(
       download.file(url, tempFile, quiet=TRUE, mode="wb"),
       # Creates an error if the file is unable to download
-      error = function(e) stop("Geography file was unable to be downloaded")
+      error = function(e) stop("Geography file could not be downloaded")
     )
 
     extensions <- c(".shp", ".dbf", ".prj", ".shx")
@@ -120,13 +78,17 @@ om_geo <- function(year, level, format) {
   # Processing functions
   # ============================================================================
 
+  # Process requests from 2011 and 2016
   process_2011_2016 <- function(year) {
-    # Get url to Stats Canada
+    # Gets the url to Stats Canada and verifies a valid year
     if (year == "2011") {
       stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000a11a_e.zip"
     }
-    else {
+    else if (year == "2016") {
       stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip"
+    }
+    else {
+      stop("Invalid year used (use 2011 or 2016)")
     }
 
     # Gets the page name for the given level and year as "page"
@@ -137,15 +99,16 @@ om_geo <- function(year, level, format) {
       prefix <- level
     }
 
+    # Ensures valid page name syntax is used
     if (year == "2011" || level == "DAUID") {
       page <- paste0(prefix, "_", year)
     }
     else {
       page <- paste0(year, "_", prefix)
     }
+
     # Loads a dataframe containing marginalization data
     df1 <- om_data(year, level)
-
 
     # Loads a dataframe containing shape data
     df2 <- extractFromZip(stat_url) %>%
@@ -174,9 +137,75 @@ om_geo <- function(year, level, format) {
     return(shape_marg)
   }
 
+  # Process requests from 2021
+  process_2021 <- function() {
+    # ...
+  }
+
   # ============================================================================
-  # Return function
+  # Main switch
   # ============================================================================
+
+  # Process request for a given year
+  switch(year,
+         # stats_url <- URL for the shapefile
+         "2001"={
+           #stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000b01a_e.zip"
+           stop("This year has not yet been implemented")
+         },
+         "2006"={
+           #stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000a06a_e.zip"
+           stop("This year has not yet been implemented")
+         },
+         "2011"={
+           stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000a11a_e.zip"
+           #shape_marg <- process_2011_2016(2011)
+         },
+         "2016"={
+           stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip"
+           #shape_marg <- process_2011_2016(2016)
+         },
+         "2021"={
+           #shape_marg <- process_2021()
+           stop("The onmaRg data for this year is not yet available")
+         },
+         {
+           # Breaks if an invalid ON-Marg year is entered
+           stop("There is no record for year " + year)
+         }
+  )
+
+  # Returns the correct format
+  #switch(format,
+  #       "sf"={
+  #         return(shape_marg)
+  #       },
+  #       "sp"={
+  #         return(as_Spatial(shape_marg))
+  #       },
+  #       {
+  #         stop("Unrecognized file format used, please specify 'sf' or 'sp'")
+  #       }
+  #)
+
+  # ============================================================================
+  # Legacy processing functions
+  # ============================================================================
+
+  # Gets the page name for the given level and year as "page"
+  if (level == "DAUID") {
+    prefix <- "DA"
+  }
+  else {
+    prefix <- level
+  }
+
+  if (year == "2011" || level == "DAUID") {
+    page <- paste0(prefix, "_", year)
+  }
+  else {
+    page <- paste0(year, "_", prefix)
+  }
 
   # Loads a dataframe containing marginalization data
   df1 <- om_data(year, level)
