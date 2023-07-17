@@ -1,4 +1,28 @@
-globalVariables(c("geometry"))
+globalVariables(c(
+  "geometry",
+  "DAUID_ADIDU",
+  "PRUID_PRIDU",
+  "PRNAME_PRNOM",
+  "CDUID_DRIDU",
+  "CDNAME_DRNOM",
+  "CDTYPE_DRGENRE",
+  "CCSUID_SRUIDU",
+  "CCSNAME_SRUNOM",
+  "CSDUID_SDRIDU",
+  "CSDNAME_SDRNOM",
+  "CSDTYPE_SDRGENRE",
+  "ERUID_REIDU",
+  "ERNAME_RENOM",
+  "SACCODE_CSSCODE",
+  "SACTYPE_CSSGENRE",
+  "CMAUID_RMRIDU",
+  "CMAPUID_RMRPIDU",
+  "CMANAME_RMRNOM",
+  "CMATYPE_RMRGENRE",
+  "CTUID_SRIDU",
+  "CTNAME_SRNOM",
+  "ADAUID_ADAIDU"
+))
 
 #' Load OnMarg spatial data
 #'
@@ -148,7 +172,7 @@ om_geo <- function(year, level, format) {
 
     # Read in unzipped file as a DF and filter for Ontario
     df1 <- read.csv(paste0(tempDir, "\\2021_92-151_X.csv")) %>%
-      filter("PRNAME_PRNOM" == "Ontario")
+      filter(PRNAME_PRNOM == "Ontario")
 
     # =================
     # Download SHP file
@@ -167,28 +191,28 @@ om_geo <- function(year, level, format) {
     stats_geom <- right_join(df1, df2, by=c("DAUID_ADIDU"="DAUID")) %>%
       select(
         # Rename columns to make them similar to 2016/2011 data
-        DAUID = "DAUID_ADIDU",
-        PRUID = "PRUID_PRIDU",
-        PRNAME = "PRNAME_PRNOM",
-        CDUID	= "CDUID_DRIDU",
-        CDNAME = "CDNAME_DRNOM",
-        CDTYPE = "CDTYPE_DRGENRE",
-        CCSUID = "CCSUID_SRUIDU",
-        CCSNAME = "CCSNAME_SRUNOM",
-        CSDUID = "CSDUID_SDRIDU",
-        CSDNAME = "CSDNAME_SDRNOM",
-        CSDTYPE = "CSDTYPE_SDRGENRE",
-        ERUID = "ERUID_REIDU",
-        ERNAME = "ERNAME_RENOM",
-        SACCODE = "SACCODE_CSSCODE",
-        SACTYPE = "SACTYPE_CSSGENRE",
-        CMAUID = "CMAUID_RMRIDU",
-        CMAPUID = "CMAPUID_RMRPIDU",
-        CMANAME = "CMANAME_RMRNOM",
-        CMATYPE = "CMATYPE_RMRGENRE",
-        CTUID = "CTUID_SRIDU",
-        CTNAME = "CTNAME_SRNOM",
-        ADAUID = "ADAUID_ADAIDU",
+        DAUID = DAUID_ADIDU,
+        PRUID = PRUID_PRIDU,
+        PRNAME = PRNAME_PRNOM,
+        CDUID	= CDUID_DRIDU,
+        CDNAME = CDNAME_DRNOM,
+        CDTYPE = CDTYPE_DRGENRE,
+        CCSUID = CCSUID_SRUIDU,
+        CCSNAME = CCSNAME_SRUNOM,
+        CSDUID = CSDUID_SDRIDU,
+        CSDNAME = CSDNAME_SDRNOM,
+        CSDTYPE = CSDTYPE_SDRGENRE,
+        ERUID = ERUID_REIDU,
+        ERNAME = ERNAME_RENOM,
+        SACCODE = SACCODE_CSSCODE,
+        SACTYPE = SACTYPE_CSSGENRE,
+        CMAUID = CMAUID_RMRIDU,
+        CMAPUID = CMAPUID_RMRPIDU,
+        CMANAME = CMANAME_RMRNOM,
+        CMATYPE = CMATYPE_RMRGENRE,
+        CTUID = CTUID_SRIDU,
+        CTNAME = CTNAME_SRNOM,
+        ADAUID = ADAUID_ADAIDU,
         geometry
       ) %>%
       st_as_sf()
