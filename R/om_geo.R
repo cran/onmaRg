@@ -1,5 +1,6 @@
 globalVariables(c(
   "geometry",
+  "PRUID",
   "DAUID_ADIDU",
   "PRUID_PRIDU",
   "PRNAME_PRNOM",
@@ -207,7 +208,8 @@ om_geo <- function(year, level, format, quiet_sf=FALSE) {
     # =================
 
     df2 <- extractFromZip(shp_url, quiet_sf) %>%
-      st_transform(CRS_to_use)
+      st_transform(CRS_to_use) %>%
+      select(-PRUID)
 
     df2$DAUID <- as.numeric(df2$DAUID)
 
@@ -216,7 +218,8 @@ om_geo <- function(year, level, format, quiet_sf=FALSE) {
     # ===================
 
     # Combine df1$DAUID_ADIDU with df2$DAUID using a left-join
-    stats_geom <- right_join(df1, df2, by=c("DAUID"="DAUID"))
+    stats_geom <- right_join(df1, df2, by=c("DAUID"="DAUID")) %>%
+      st_as_sf()
 
     # Summarizes the dataframe if not selecting DAUID
     if (!level == "DAUID") {
