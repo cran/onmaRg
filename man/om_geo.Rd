@@ -4,17 +4,19 @@
 \alias{om_geo}
 \title{Load OnMarg spatial data}
 \usage{
-om_geo(year, level, format)
+om_geo(year, level, format, quiet_sf = FALSE)
 }
 \arguments{
-\item{year}{Integer year of data to load}
+\item{year}{Integer year of data to load.}
 
-\item{level}{The level of precision to load, this can be "DAUID", "CTUID", "CSDUID", "CCSUID", "CDUID", "CMAUID", "PHUUID", "LHINUID", or "LHIN_SRUID"}
+\item{level}{The level of precision to load, this can be "DAUID", "CTUID", "CSDUID", "CCSUID", "CDUID", "CMAUID", "PHUUID", "LHINUID", or "LHIN_SRUID".}
 
-\item{format}{The format for the geographic object, this can be "sf" or "sp"}
+\item{format}{The format for the geographic object, this can be "sf" or "sp".}
+
+\item{quiet_sf}{Logical, whether or not to print a message after transforming geometry projection.}
 }
 \value{
-A sf or sp object containing the Marginalization Index and geographic boundaries for every geographic identifier
+A sf or sp object containing the Marginalization Index and geographic boundaries for every geographic identifier.
 }
 \description{
 This function combines Public Health Ontario's Ontario Marginalization Index data with Statistics Canada's shape files to create an sf_object.  The sf_object can be used for mapping with packages such as ggplot, and for spatial analysis.

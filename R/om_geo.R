@@ -30,10 +30,11 @@ globalVariables(c(
 #'
 #' If a year or level is used that does not exist or is not implemented, an error message will be produced.
 #' If the geometry file is unable to be downloaded, an error message will be produced.
-#' @param year Integer year of data to load
-#' @param level The level of precision to load, this can be "DAUID", "CTUID", "CSDUID", "CCSUID", "CDUID", "CMAUID", "PHUUID", "LHINUID", or "LHIN_SRUID"
-#' @param format The format for the geographic object, this can be "sf" or "sp"
-#' @return A sf or sp object containing the Marginalization Index and geographic boundaries for every geographic identifier
+#' @param year Integer year of data to load.
+#' @param level The level of precision to load, this can be "DAUID", "CTUID", "CSDUID", "CCSUID", "CDUID", "CMAUID", "PHUUID", "LHINUID", or "LHIN_SRUID".
+#' @param format The format for the geographic object, this can be "sf" or "sp".
+#' @param quiet_sf Logical, whether or not to print a message after transforming geometry projection.
+#' @return A sf or sp object containing the Marginalization Index and geographic boundaries for every geographic identifier.
 #' @import dplyr
 #' @import httr
 #' @import readxl
@@ -46,7 +47,7 @@ globalVariables(c(
 #' DA_2016_geo <- om_geo(2016, "DAUID", "sf")
 #' }
 
-om_geo <- function(year, level, format) {
+om_geo <- function(year, level, format, quiet_sf=FALSE) {
 
   # Initial setup
   year <- toString(year)
@@ -72,7 +73,7 @@ om_geo <- function(year, level, format) {
 
 
   # Extracts all geographic files from zip
-  extractFromZip <- function(url) {
+  extractFromZip <- function(url, quiet_sf) {
     tempDir <- tempdir()
     tempFile <- tempfile()
 
@@ -95,7 +96,7 @@ om_geo <- function(year, level, format) {
 
     filepath <- paste0(tempDir, "/", filename)
 
-    return(st_read(filepath))
+    return(st_read(filepath, quiet=quiet_sf))
   }
 
   # ============================================================================
@@ -103,7 +104,7 @@ om_geo <- function(year, level, format) {
   # ============================================================================
 
   # Process requests from 2011 and 2016
-  process_2011_2016 <- function(year, level, stat_url) {
+  process_2011_2016 <- function(year, level, stat_url, quiet_sf) {
 
     # Gets the page name for the given level and year as "page"
     if (level == "DAUID") {
@@ -125,7 +126,7 @@ om_geo <- function(year, level, format) {
     df1 <- om_data(year, level)
 
     # Loads a dataframe containing shape data
-    df2 <- extractFromZip(stat_url) %>%
+    df2 <- extractFromZip(stat_url, quiet_sf) %>%
       st_transform(CRS_to_use) #%>%
 
     # Summarizes the dataframe if not selecting DAUID
@@ -151,7 +152,7 @@ om_geo <- function(year, level, format) {
 
 
   # Process requests from 2021
-  process_2021 <- function(level, url, shp_url) {
+  process_2021 <- function(level, url, shp_url, quiet_sf) {
 
     # =========================
     # Download identifying file
@@ -171,24 +172,9 @@ om_geo <- function(year, level, format) {
     unzip(tempFile, "2021_92-151_X.csv", exdir=tempDir)
 
     # Read in unzipped file as a DF and filter for Ontario
+    # Read in unzipped file as a DF and filter for Ontario
     df1 <- read.csv(paste0(tempDir, "\\2021_92-151_X.csv")) %>%
-      filter(PRNAME_PRNOM == "Ontario")
-
-    # =================
-    # Download SHP file
-    # =================
-
-    df2 <- extractFromZip(shp_url) %>%
-      st_transform(CRS_to_use)
-
-    df2$DAUID <- as.numeric(df2$DAUID)
-
-    # ===================
-    # Format file for use
-    # ===================
-
-    # Combine df1$DAUID_ADIDU with df2$DAUID using a left-join
-    stats_geom <- right_join(df1, df2, by=c("DAUID_ADIDU"="DAUID")) %>%
+      filter(PRNAME_PRNOM == "Ontario") %>%
       select(
         # Rename columns to make them similar to 2016/2011 data
         DAUID = DAUID_ADIDU,
@@ -212,10 +198,25 @@ om_geo <- function(year, level, format) {
         CMATYPE = CMATYPE_RMRGENRE,
         CTUID = CTUID_SRIDU,
         CTNAME = CTNAME_SRNOM,
-        ADAUID = ADAUID_ADAIDU,
-        geometry
+        ADAUID = ADAUID_ADAIDU
       ) %>%
-      st_as_sf()
+      unique()
+
+    # =================
+    # Download SHP file
+    # =================
+
+    df2 <- extractFromZip(shp_url, quiet_sf) %>%
+      st_transform(CRS_to_use)
+
+    df2$DAUID <- as.numeric(df2$DAUID)
+
+    # ===================
+    # Format file for use
+    # ===================
+
+    # Combine df1$DAUID_ADIDU with df2$DAUID using a left-join
+    stats_geom <- right_join(df1, df2, by=c("DAUID"="DAUID"))
 
     # Summarizes the dataframe if not selecting DAUID
     if (!level == "DAUID") {
@@ -256,16 +257,16 @@ om_geo <- function(year, level, format) {
          },
          "2011"={
            stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/gda_000a11a_e.zip"
-           shape_marg <- process_2011_2016(2011, level, stat_url)
+           shape_marg <- process_2011_2016(2011, level, stat_url, quiet_sf)
          },
          "2016"={
            stat_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip"
-           shape_marg <- process_2011_2016(2016, level, stat_url)
+           shape_marg <- process_2011_2016(2016, level, stat_url, quiet_sf)
          },
          "2021"={
            stat_url_1 <- "https://www12.statcan.gc.ca/census-recensement/2021/geo/aip-pia/attribute-attribs/files-fichiers/2021_92-151_X.zip"
            stat_url_2 <- "https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip"
-           shape_marg <- process_2021(level, stat_url_1, stat_url_2)
+           shape_marg <- process_2021(level, stat_url_1, stat_url_2, quiet_sf)
          },
          {
            # Breaks if an invalid ON-Marg year is entered
